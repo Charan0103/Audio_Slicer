@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Slicer Pro</title>
+
+    <style>
+        body {
+            background-color: #1f1f1f;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #2b2b2b;
+            width: 700px;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0px 0px 20px rgba(0,0,0,0.5);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        input[type="file"] {
+            margin: 15px 0;
+        }
+
+        input[type="number"] {
+            width: 200px;
+            padding: 10px;
+            margin: 10px;
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .controls button {
+            margin: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .slice-btn {
+            background-color: lightgreen;
+            border: none;
+            padding: 15px 25px;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .slice-btn:hover {
+            background-color: #7CFC00;
+        }
+
+        #audioInfo {
+            margin-top: 15px;
+            color: #dddddd;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>🎵 AUDIO SLICER PRO</h1>
+
+    <form action="/slice" method="POST" enctype="multipart/form-data">
+
+        <input
+            type="file"
+            id="audioFile"
+            name="audio"
+            accept=".mp3,.wav"
+            required>
+
+        <div id="audioInfo">
+            No Audio Selected
+        </div>
+
+        <audio id="player" controls></audio>
+
+        <div class="controls">
+
+            <button type="button" onclick="playAudio()">
+                ▶ Play
+            </button>
+
+            <button type="button" onclick="pauseAudio()">
+                ⏸ Pause
+            </button>
+
+            <button type="button" onclick="stopAudio()">
+                ⏹ Stop
+            </button>
+
+            <button type="button" onclick="resetAudio()">
+                🔄 Reset
+            </button>
+
+        </div>
+
+        <br>
+
+        <label>Start Time (seconds)</label>
+        <br>
+
+        <input
+            type="number"
+            name="start"
+            min="0"
+            step="0.1"
+            required>
+
+        <br>
+
+        <label>End Time (seconds)</label>
+        <br>
+
+        <input
+            type="number"
+            name="end"
+            min="0"
+            step="0.1"
+            required>
+
+        <br><br>
+
+        <button type="submit" class="slice-btn">
+            ✂ Slice Audio
+        </button>
+
+    </form>
+
+</div>
+
+<script>
+
+const audioFile = document.getElementById("audioFile");
+const player = document.getElementById("player");
+const audioInfo = document.getElementById("audioInfo");
+
+audioFile.addEventListener("change", function () {
+
+    const file = this.files[0];
+
+    if (file) {
+
+        const url = URL.createObjectURL(file);
+
+        player.src = url;
+
+        audioInfo.innerHTML =
+            "🎵 " + file.name +
+            "<br>📦 " +
+            (file.size / (1024 * 1024)).toFixed(2) +
+            " MB";
+    }
+
+});
+
+function playAudio() {
+    player.play();
+}
+
+function pauseAudio() {
+    player.pause();
+}
+
+function stopAudio() {
+    player.pause();
+    player.currentTime = 0;
+}
+
+function resetAudio() {
+
+    audioFile.value = "";
+
+    player.pause();
+    player.src = "";
+
+    audioInfo.innerHTML = "No Audio Selected";
+}
+
+</script>
+
+</body>
+</html>
